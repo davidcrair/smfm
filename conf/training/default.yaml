@@ -1,0 +1,92 @@
+n_iters: 3000
+batch_size: 512
+lr: 3.0e-4
+ot_subsample: 5000
+# Network architecture for the Euclidean / MMFM trainers:
+#   v1 = our default 4-layer 256-wide plain MLP (FlowNet)
+#   v2 = OTP-FM/Rohbeck-faithful 10-layer 128-wide MLP with residuals,
+#        layernorm, linear x-embedding, sinusoidal t-embedding (FlowNetV2).
+flow_net_arch: v1
+# EMA decay for the eval model. Default 0.999 is good for ~3000-iter
+# runs. Drop to 0.99 to match Rohbeck/OTP-FM's faster timescale.
+ema_decay: 0.999
+# Gradient-norm clipping max. 0 (or null) disables clipping. OTP-FM
+# config uses 0 (no clip).
+grad_clip: 1.0
+# Epoch-based training. When true, ignore `n_iters` and instead run
+# `n_epochs` passes through the chain pool with reshuffle each epoch
+# (matches OTP-FM/Rohbeck `reshuffle_each_epoch=true`). One epoch =
+# n_chains // batch_size batches.
+epoch_based: false
+n_epochs: null
+# Linear-LR warmup duration in iterations. null -> default
+# min(500, n_iters // 10). Set to 0 to disable warmup (paper-faithful
+# Rohbeck/OTP-FM training has no warmup).
+warmup_iters: null
+# Whether to evaluate the EMA-of-weights model at the end of training.
+# Disabled by default: at decay 0.999 over 3000 iters, ~5% of EMA still
+# comes from the warmup-end snapshot rather than late-converged weights,
+# which can degrade rather than smooth the eval signal once training
+# plateaus at the FM noise floor. Override via training.use_ema=true.
+use_ema: false
+# Multiplier on Rohbeck's time-dependent σ_t schedule (Eq. 10). Paper
+# spec is 1.0 (peak σ=1 mid-interval), which is the SAME magnitude
+# as the data after StandardScaler normalisation -- this drowns the
+# spline-derivative gradient signal in our 4-layer 256-wide MLP and
+# leads to W_2 7x worse than the Tong-style baselines. 0.05-0.1 is a
+# more practical range; 0.0 disables the noise (deterministic spline-FM).
+rohbeck_sigma_scale: 0.1
+si_sigma: 0.05
+si_brownian_steps: 3
+biharm_beta: 0.3
+graph_smooth:
+  strength: 0.01
+  knn: 15
+  batch_edges: 512
+  sigma_scale: 1.0
+score:
+  iters: 3000
+  alpha: 0.005
+  net_sigma: 0.7
+premetric:
+  extension_k: 64
+  softmax_beta: 10.0
+  ode_steps: 16
+  trajectory_mode: graph_geodesic
+  decode_k: 64
+  decode_beta: 10.0
+  decode_chunk_size: 64
+  velocity_fd_eps: 0.02
+  knn: 15
+  n_eig: 50
+  # power: lambda^{-2 * weight_power}; diffusion: exp(-2 * diffusion_time * lambda)
+  spectral_family: power
+  weight_power: 0.5
+  diffusion_time: 1.0
+  time_cap: 0.95
+  grad_norm_floor: 0.05
+  max_drive_scale: 50.0
+  diagnostics:
+    enabled: false
+    samples: 512
+    t_values: [0.25, 0.5, 0.75, 0.9]
+spectral_jvp:
+  encoder_iters: 2000
+  encoder_batch_size: 512
+  encoder_lr: 3.0e-4
+  encoder_hidden_dim: 256
+  encoder_depth: 4
+  interp_fraction: 0.5
+  decode_k: 64
+  decode_tau: auto
+  decode_chunk_size: 64
+  velocity_norm_weight: 1.0e-4
+  diagnostics: true
+phate:
+  n_components: 10
+  knn: 15
+  decay: 40
+  n_landmark: 2000
+  # euclidean: PHATE's default input-space graph.
+  # sphere_arc: precomputed great-circle distances on the positive orthant.
+  graph_metric: euclidean

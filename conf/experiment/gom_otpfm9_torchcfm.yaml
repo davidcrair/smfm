@@ -1,0 +1,16 @@
+# @package _global_
+# Run torchcfm-backed MMFM on GoM under the OTP-FM 9-stage holdout
+# protocol, alongside the existing MM+Linear / MM+MMFM-OTPFM /
+# MM+MMFM-Rohbeck baselines so the table is directly comparable to
+# OTP-FM Table 2 (W_2 at held-out stages t1, t3, t5, t7).
+#
+# MM+MMFM-TorchCFM = OT-CFM matcher + argmax-chain coupling. This is
+# the closest in-codebase analogue to the Tong et al. 2023 / OTP-FM
+# MMFM baseline that ships with torchcfm.
+methods:
+  - MM+Linear                  # Tong+2023 MMFM, joint-sample, our impl
+  - MM+MMFM-OTPFM              # OTP-FM repo's MMFM (argmax-chain), our impl
+  - MM+MMFM-Rohbeck            # Rohbeck+2025 MMFM (cubic spline + sigma_t)
+  - MM+MMFM-TorchCFM           # torchcfm OT-CFM matcher + argmax-chain
+  - MM+MMFM-TorchCFM-ICFM      # torchcfm vanilla I-CFM (no internal OT)
+  - MM+MMFM-TorchCFM-SBCFM     # torchcfm Schroedinger bridge

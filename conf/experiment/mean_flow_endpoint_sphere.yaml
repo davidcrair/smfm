@@ -1,0 +1,10 @@
+# @package _global_
+# Direct endpoint mean-flow baseline on sphere coordinates. Trains
+# Log_x(y)/(t_end-t_start) targets for all OT-paired stage pairs and evaluates
+# with a single exponential-map step.
+defaults:
+  - override /space: sphere
+methods:
+  - MM+MeanFlow
+eval:
+  n_seeds: 1

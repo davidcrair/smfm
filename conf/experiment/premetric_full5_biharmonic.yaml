@@ -1,0 +1,12 @@
+# @package _global_
+methods:
+  - MM+SLERP
+  - MM+SLERP+Biharmonic
+  - MM+PremetricBiharmonic-SphereOT
+  - MM+PremetricBiharmonic-SpectralOT
+training:
+  premetric:
+    spectral_family: power
+    weight_power: 1.0
+eval:
+  n_seeds: 1

@@ -1,0 +1,10 @@
+# @package _global_
+# Compare MM+SLERP baseline against three spectral OT cost variants
+# (no premetric paths; SLERP interpolation throughout).
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral
+  - MM+SLERP+Biharmonic
+  - MM+SLERP+GlobalBiharmonic
+eval:
+  n_seeds: 12

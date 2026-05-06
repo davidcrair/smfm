@@ -1,0 +1,64 @@
+\begin{table}[H]
+\centering
+\caption{Embryoid body 80/10/10, log1p HVG ambient + Euclidean kNN graph, subsampled to 2000 cells per stage. Chained MMD$^2$, mean$\pm$std over 5 splits $\times$ 5 init seeds.}
+\label{tab:eb_8010_log1p_eucknn_2k}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{MMD$^2$ at evaluation time / stage} & & \\
+\cmidrule(lr){2-5}
+Method & $t{=}0.25$ & $t{=}0.50$ & $t{=}0.75$ & $t{=}1.00$ & mean & $\Delta$ \\
+\midrule
+Linear FM
+  & \underline{0.013}$\,\pm\,0.002$
+  & \underline{0.023}$\,\pm\,0.003$
+  & 0.025$\,\pm\,0.003$
+  & 0.029$\,\pm\,0.003$
+  & 0.023$\,\pm\,0.003$
+  & --- \\
+Random OT
+  & 0.017$\,\pm\,0.001$
+  & 0.025$\,\pm\,0.003$
+  & 0.028$\,\pm\,0.003$
+  & 0.028$\,\pm\,0.004$
+  & 0.025$\,\pm\,0.002$
+  & $+8.8\%$ \\
+\ourmodel $\alpha=0$
+  & 0.014$\,\pm\,0.002$
+  & 0.024$\,\pm\,0.004$
+  & 0.024$\,\pm\,0.003$
+  & \textbf{0.026}$\,\pm\,0.001$
+  & \underline{0.022}$\,\pm\,0.002$
+  & $-3.6\%$ \\
+\ourmodel $\alpha=0.5$
+  & 0.013$\,\pm\,0.002$
+  & 0.027$\,\pm\,0.002$
+  & 0.024$\,\pm\,0.002$
+  & \underline{0.027}$\,\pm\,0.002$
+  & 0.023$\,\pm\,0.001$
+  & $+1.0\%$ \\
+\ourmodel $\alpha=1$
+  & \textbf{0.013}$\,\pm\,0.001$
+  & \textbf{0.020}$\,\pm\,0.003$
+  & \textbf{0.021}$\,\pm\,0.003$
+  & 0.027$\,\pm\,0.002$
+  & \textbf{0.020}$\,\pm\,0.002$
+  & $-10.3\%$ \\
+\ourmodel $\alpha=1.5$
+  & 0.013$\,\pm\,0.002$
+  & 0.023$\,\pm\,0.005$
+  & \underline{0.023}$\,\pm\,0.004$
+  & 0.028$\,\pm\,0.004$
+  & 0.022$\,\pm\,0.003$
+  & $-3.2\%$ \\
+\ourmodel $\alpha=2$
+  & 0.014$\,\pm\,0.002$
+  & 0.024$\,\pm\,0.004$
+  & 0.025$\,\pm\,0.004$
+  & 0.030$\,\pm\,0.003$
+  & 0.023$\,\pm\,0.003$
+  & $+2.1\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}

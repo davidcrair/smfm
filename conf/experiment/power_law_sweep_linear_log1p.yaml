@@ -1,0 +1,24 @@
+# @package _global_
+# Power-law spectral OT cost sweep with the Linear/Euclidean trainer in
+# **raw log1p HVG ambient space** (no compositional / sphere encoding).
+# Pairs with `data.representation=euclidean_raw` so the trainer treats the
+# 2000-dim log1p HVG vectors as ordinary R^D coordinates. Eval target is
+# the same raw log1p HVG; MMD^2 / MMD^2_otpfm / SWD are computed in that
+# ambient space, plus PCA-50 latent variants when eval.compute_pca_metrics=true.
+defaults:
+  - override /space: log1p
+data:
+  representation: euclidean_raw
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+Random   # last, to avoid RNG drift
+eval:
+  mmd_protocol: both
+  compute_fgd: false              # skip slow scipy.linalg.sqrtm at D=2000
+  compute_pca_metrics: true       # report ambient + PCA-50 variants
+  pca_metric_dim: 50

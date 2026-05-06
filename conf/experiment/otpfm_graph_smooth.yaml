@@ -1,0 +1,11 @@
+# @package _global_
+data:
+  holdout_stages: "1,3"
+eval:
+  n_seeds: 5
+methods:
+  - MM+SLERP
+  - MM+SLERP+GraphSmooth
+training:
+  graph_smooth:
+    strength: 0.01

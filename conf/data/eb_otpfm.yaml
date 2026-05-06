@@ -1,0 +1,12 @@
+name: eb_otpfm
+representation: euclidean_raw
+path: ${hydra:runtime.cwd}/data/eb_velocity_v5.npz
+pca_dim: 100
+holdout_stages: null
+otpfm_holdout: true   # default OTP-FM holdout pattern: stages 1,3 held out
+# Match OTP-FM's per-stage data protocol: held-out stages contribute zero
+# training cells and ALL their cells to the eval target; training stages
+# contribute ALL their cells to BOTH the training set and the eval target
+# (OTP-FM evaluates "Rest" against the cells the model trained on).
+otpfm_split: true
+seed: 42

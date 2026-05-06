@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+
+# Large data files (download separately)
+*.h5ad
+*.h5
+*.npz
+
+# Generated experiment outputs
+*.log
+.log
+*.html
+*.pt
+*.ckpt
+runs/
+wandb/
+outputs/
+logs/
+modal_outputs/
+old_logs/
+old_outputs/
+old_plots/
+tmp/
+
+# OS
+.DS_Store

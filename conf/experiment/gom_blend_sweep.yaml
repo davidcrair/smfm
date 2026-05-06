@@ -1,0 +1,26 @@
+# @package _global_
+# GoM combined Spectral+Euclidean blend sweep on the disconnected-graph
+# vortex dataset. Tests whether a small Euclidean regularization recovers
+# stratified-OT-like behavior when the kNN union graph factorizes into
+# multiple components (Belkin-Niyogi consistency precondition fails).
+#
+# Methods:
+#   - MM+Linear                                  (pure Euclidean OT baseline)
+#   - MM+Linear+SquaredSpectral@alpha=1          (pure spectral, blend=0)
+#   - MM+Linear+SquaredSpectral@alpha=1@blend=0.25
+#   - MM+Linear+SquaredSpectral@alpha=1@blend=0.5
+#   - MM+Linear+SquaredSpectral@alpha=1@blend=0.75
+#
+# alpha=1 (commute-time-like) is the largest-effect alpha on cleaner
+# datasets; if any alpha shows a recovery via Euclidean blending, this
+# is the candidate.
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.75
+eval:
+  n_seeds: 1
+  mmd_protocol: both
+  compute_fgd: false

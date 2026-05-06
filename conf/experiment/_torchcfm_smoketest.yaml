@@ -1,0 +1,7 @@
+# @package _global_
+# Smoke-test config for the torchcfm-backed multi-marginal trainer.
+methods:
+  - MM+MMFM-TorchCFM                                   # OT-CFM (default)
+  - MM+MMFM-TorchCFM-ICFM                              # vanilla I-CFM (no internal OT)
+  - MM+MMFM-TorchCFM-SBCFM                             # Schrödinger bridge CFM
+  - MM+MMFM-TorchCFM+SquaredSpectral@alpha=0.5,blend=0.25

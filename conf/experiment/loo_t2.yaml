@@ -1,0 +1,9 @@
+# @package _global_
+data:
+  holdout_stages: "2"
+eval:
+  n_seeds: 12
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral
+  - MM+Score_learned+Biharmonic

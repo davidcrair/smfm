@@ -1,0 +1,16 @@
+# @package _global_
+methods:
+  - MM+SLERP
+  - "MM+SpectralPathJVP@alpha=0"
+
+training:
+  premetric:
+    n_eig: 20
+    weight_power: 0.0
+    spectral_family: power
+  spectral_jvp:
+    encoder_iters: 2000
+    encoder_batch_size: 512
+    decode_k: 64
+    decode_tau: auto
+    velocity_norm_weight: 1.0e-4

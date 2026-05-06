@@ -1,0 +1,26 @@
+# SLURM launcher config for Hydra submitit.
+# Usage:
+#   python -m surf.train --multirun hydra/launcher=slurm experiment=si_sweep
+#   python -m surf.train --multirun hydra/launcher=slurm methods='[MM+SLERP,MM+SI]' training.si_sigma=0.01,0.05
+#
+# For a single run on SLURM (use --multirun with no sweep params):
+#   python -m surf.train --multirun hydra/launcher=slurm experiment=otpfm
+
+_target_: hydra_plugins.hydra_submitit_launcher.submitit_launcher.SlurmLauncher
+
+# Partition and resources — adjust for your cluster
+partition: gpu_b200
+gpus_per_node: 1
+cpus_per_task: 8
+mem_gb: 64
+timeout_min: 180          # 3 hours
+
+# Job naming
+name: surf_${now:%Y%m%d_%H%M%S}
+
+# Additional SLURM flags
+additional_parameters:
+  requeue: true
+
+# Output directory for SLURM logs
+# (Hydra already creates per-run output dirs; submitit logs go there too)

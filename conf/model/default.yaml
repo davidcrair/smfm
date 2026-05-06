@@ -1,0 +1,8 @@
+flow:
+  hidden: 256
+  depth: 4
+score:
+  hidden: 256
+  depth: 4
+  sigma_emb_dim: 64
+  time_emb_dim: 64

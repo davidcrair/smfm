@@ -1,0 +1,64 @@
+\begin{table}[H]
+\centering
+\caption{Paul15 erythroid trajectory (additional dataset), log1p HVG ambient + Euclidean kNN graph. Chained $\mathrm{MMD^2}$, mean $\pm$ std over 5 splits $\times$ 5 init seeds.}
+\label{tab:paul15_log1p_eucknn}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{MMD$^2$ at evaluation time / stage} & & \\
+\cmidrule(lr){2-5}
+Method & $t{=}0.25$ & $t{=}0.50$ & $t{=}0.75$ & $t{=}1.00$ & mean & $\Delta$ \\
+\midrule
+Linear FM
+  & 0.108$\,\pm\,0.014$
+  & 0.126$\,\pm\,0.021$
+  & \underline{0.113}$\,\pm\,0.015$
+  & \textbf{0.077}$\,\pm\,0.015$
+  & \underline{0.106}$\,\pm\,0.015$
+  & --- \\
+Random OT
+  & 0.106$\,\pm\,0.011$
+  & \underline{0.118}$\,\pm\,0.016$
+  & 0.122$\,\pm\,0.021$
+  & 0.104$\,\pm\,0.026$
+  & 0.112$\,\pm\,0.016$
+  & $+6.0\%$ \\
+\ourmodel $\alpha=0$
+  & \textbf{0.101}$\,\pm\,0.010$
+  & \textbf{0.115}$\,\pm\,0.012$
+  & \textbf{0.106}$\,\pm\,0.008$
+  & \underline{0.079}$\,\pm\,0.007$
+  & \textbf{0.100}$\,\pm\,0.007$
+  & $-5.6\%$ \\
+\ourmodel $\alpha=0.5$
+  & 0.108$\,\pm\,0.011$
+  & 0.125$\,\pm\,0.010$
+  & 0.126$\,\pm\,0.014$
+  & 0.104$\,\pm\,0.019$
+  & 0.116$\,\pm\,0.011$
+  & $+8.9\%$ \\
+\ourmodel $\alpha=1$
+  & 0.108$\,\pm\,0.014$
+  & 0.128$\,\pm\,0.014$
+  & 0.136$\,\pm\,0.024$
+  & 0.118$\,\pm\,0.025$
+  & 0.123$\,\pm\,0.017$
+  & $+15.8\%$ \\
+\ourmodel $\alpha=1.5$
+  & 0.105$\,\pm\,0.010$
+  & 0.121$\,\pm\,0.011$
+  & 0.119$\,\pm\,0.011$
+  & 0.097$\,\pm\,0.017$
+  & 0.110$\,\pm\,0.010$
+  & $+4.1\%$ \\
+\ourmodel $\alpha=2$
+  & \underline{0.103}$\,\pm\,0.010$
+  & 0.119$\,\pm\,0.011$
+  & 0.115$\,\pm\,0.010$
+  & 0.092$\,\pm\,0.014$
+  & 0.107$\,\pm\,0.007$
+  & $+1.4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}

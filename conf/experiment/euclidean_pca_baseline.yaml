@@ -1,0 +1,8 @@
+# @package _global_
+data:
+  n_hvg: 1500
+eval:
+  n_seeds: 12
+methods:
+  - MM+SLERP
+  - MM+Linear

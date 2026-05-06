@@ -1,0 +1,11 @@
+# @package _global_
+# Euclidean flow-matching baseline trained directly in log1p-HVG space
+# (no PCA reduction). Same data split, same n_seeds, evaluated in compositional
+# space against the same test cells as the spectral sweep — apples-to-apples
+# comparison of Fisher-sphere methods vs ambient Euclidean FM.
+defaults:
+  - override /space: log1p
+methods:
+  - MM+Linear
+eval:
+  n_seeds: 3

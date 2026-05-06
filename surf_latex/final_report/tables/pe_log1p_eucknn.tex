@@ -1,0 +1,64 @@
+\begin{table*}[t]
+\centering
+\caption{Pancreatic endocrinogenesis, log1p HVG ambient + Euclidean kNN graph. Chained $\mathrm{MMD}^2$ at four evaluation stages, mean $\pm$ std over 5 splits $\times$ 5 init seeds.}
+\label{tab:pe_log1p_eucknn}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{MMD$^2$ at evaluation time / stage} & & \\
+\cmidrule(lr){2-5}
+Method & $t{=}0.25$ & $t{=}0.50$ & $t{=}0.75$ & $t{=}1.00$ & mean & $\Delta$ \\
+\midrule
+Linear FM
+  & 0.018$\,\pm\,0.008$
+  & 0.058$\,\pm\,0.011$
+  & 0.063$\,\pm\,0.010$
+  & \underline{0.032}$\,\pm\,0.007$
+  & 0.043$\,\pm\,0.007$
+  & --- \\
+Random OT
+  & 0.029$\,\pm\,0.007$
+  & 0.066$\,\pm\,0.016$
+  & 0.056$\,\pm\,0.014$
+  & 0.046$\,\pm\,0.016$
+  & 0.049$\,\pm\,0.010$
+  & $+15.0\%$ \\
+\ourmodel $\alpha=0$
+  & \underline{0.009}$\,\pm\,0.006$
+  & 0.054$\,\pm\,0.010$
+  & 0.065$\,\pm\,0.013$
+  & 0.048$\,\pm\,0.006$
+  & 0.044$\,\pm\,0.006$
+  & $+3.4\%$ \\
+\ourmodel $\alpha=0.5$
+  & 0.009$\,\pm\,0.004$
+  & 0.082$\,\pm\,0.022$
+  & 0.085$\,\pm\,0.017$
+  & 0.108$\,\pm\,0.021$
+  & 0.071$\,\pm\,0.013$
+  & $+66.6\%$ \\
+\ourmodel $\alpha=1$
+  & 0.020$\,\pm\,0.006$
+  & \underline{0.044}$\,\pm\,0.007$
+  & 0.051$\,\pm\,0.005$
+  & 0.042$\,\pm\,0.009$
+  & 0.039$\,\pm\,0.005$
+  & $-8.2\%$ \\
+\ourmodel $\alpha=1.5$
+  & \textbf{0.008}$\,\pm\,0.004$
+  & 0.052$\,\pm\,0.006$
+  & \underline{0.047}$\,\pm\,0.011$
+  & 0.033$\,\pm\,0.003$
+  & \underline{0.035}$\,\pm\,0.005$
+  & $-17.6\%$ \\
+\ourmodel $\alpha=2$
+  & 0.011$\,\pm\,0.005$
+  & \textbf{0.043}$\,\pm\,0.003$
+  & \textbf{0.044}$\,\pm\,0.003$
+  & \textbf{0.030}$\,\pm\,0.005$
+  & \textbf{0.032}$\,\pm\,0.002$
+  & $-24.4\%$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

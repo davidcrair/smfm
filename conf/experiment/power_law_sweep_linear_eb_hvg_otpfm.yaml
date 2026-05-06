@@ -1,0 +1,26 @@
+# @package _global_
+# Linear-trainer power-law spectral OT cost sweep on EB at the *log1p HVG*
+# representation (your embryoid_body.h5ad), with the OTP-FM holdout pattern
+# (stages 1 and 3 held out) and full-marginal eval (otpfm_split=true).
+#
+# This is the high-dimensional counterpart of power_law_sweep_linear_otpfm
+# which uses 100-PC inputs. Same five marginals, same holdout, same metrics
+# -- but train/eval in 2000-D log1p HVG space rather than the PCA-compressed
+# 100-D latent. Tests whether the spectral OT family recovers the manifold
+# signal that PCA compression discards on the EB benchmark.
+data:
+  representation: euclidean_raw
+  otpfm_holdout: true
+  otpfm_split: true
+methods:
+  - MM+Linear                                     # Euclidean OT baseline
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+Random                              # last, to avoid RNG drift
+eval:
+  n_seeds: 1
+  mmd_protocol: both                              # report median + OTP-FM MMD^2
+  swd_projections: 200                            # bump for 2000-D stability

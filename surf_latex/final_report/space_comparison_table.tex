@@ -1,0 +1,48 @@
+\begin{table*}[t]
+\centering
+\caption{}
+\label{tab:geometry_fm_costs}
+\renewcommand{\arraystretch}{1.25}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}p{2.7cm} p{3.2cm} p{3.6cm} p{4.0cm} p{3.5cm}@{}}
+\toprule
+Operation & Euclidean $\mathbb{R}^D$ & Simplex $\Delta^{D-1}$ (linear) & Sphere $S^{D-1}$ & General Riemannian \\
+\midrule
+Conditional path $x_t$ &
+$(1{-}t)x_0 + t x_1$, one tensor op &
+$(1{-}t)p_0 + t p_1$, stays in $\Delta$, one op &
+SLERP: closed form, one matmul &
+ODE solve from $x_0$ in direction of $x_1$ \\
+\midrule
+Geodesic velocity $\dot x_t$ &
+$x_1 - x_0$ (constant) &
+$p_1 - p_0$ (constant) &
+direct derivative of SLERP, one matmul &
+numerical differentiation along ODE \\
+\midrule
+$\log_{x_0}(x_1)$ &
+$x_1 - x_0$ &
+$p_1 - p_0$ (in $\sum v_i{=}0$ tangent) &
+$\dfrac{\Omega}{\sin\Omega}(x_1 - \cos\Omega \cdot x_0)$ &
+inverse exp map $\rightarrow$ ODE shooting \\
+\midrule
+$\exp_{x_0}(v)$ &
+$x_0 + v$ &
+$p_0 + v$, project to $\Delta$ if boundary hit &
+$\cos\|v\|\cdot x_0 + \sin\|v\|\cdot v/\|v\|$ &
+ODE integration of geodesic equation \\
+\midrule
+Tangent projection at $x$ &
+identity ($T\mathbb{R}^D = \mathbb{R}^D$) &
+$v - \bar v\,\mathbf{1}$ (onto $\sum v_i{=}0$) &
+$v - (v\cdot x)\,x$ &
+requires metric tensor at $x$ \\
+\midrule
+Sampling at training time &
+one tensor op per $t$ &
+one tensor op per $t$ (+ boundary check) &
+one tensor op per $t$ &
+full ODE per minibatch sample \\
+\bottomrule
+\end{tabular}
+\end{table*}

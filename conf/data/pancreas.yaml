@@ -1,0 +1,17 @@
+name: pancreas
+representation: sphere
+path: ${hydra:runtime.cwd}/data/Pancreas/endocrinogenesis_day15.h5ad
+n_hvg: 2000
+# Per-stage cell cap; null = use all cells (default). Override on the CLI
+# (data.max_cells_per_stage=2000) to subsample for fast sanity checks.
+max_cells_per_stage: null
+holdout_stages: null
+otpfm_holdout: false
+# OTP-FM-style per-stage split (held-out stages: full marginal as eval target,
+# zero training cells; training stages: all cells in both train and eval).
+# Default false preserves the existing 80/10/10 stratified split.
+otpfm_split: false
+# Random seed for the stratified train/val/test split inside
+# load_pancreas. Override on the CLI (data.seed=43) to test
+# robustness of method comparisons across different cell partitions.
+seed: 42

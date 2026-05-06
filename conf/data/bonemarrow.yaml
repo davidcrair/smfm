@@ -1,0 +1,14 @@
+name: bonemarrow
+representation: sphere
+# null = let load_bonemarrow() fetch via scv.datasets.bonemarrow() (cached
+# automatically under the scVelo data dir on first call).
+path: null
+n_hvg: 2000
+# Per-stage cell cap; null = use all cells in each stage (default).
+max_cells_per_stage: null
+holdout_stages: null
+otpfm_holdout: false
+# OTP-FM-style per-stage split (held-out stages: full marginal as eval target,
+# zero training cells; training stages: all cells in both train and eval).
+otpfm_split: false
+seed: 42

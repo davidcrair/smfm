@@ -1,0 +1,64 @@
+\begin{table}[H]
+\centering
+\caption{Bone marrow, log1p HVG ambient + Euclidean kNN graph (alternate preprocessing). Chained $\mathrm{MMD^2}$, mean $\pm$ over 5 splits $\times$ 5 init seeds.}
+\label{tab:bm_log1p_eucknn}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{MMD$^2$ at evaluation time / stage} & & \\
+\cmidrule(lr){2-5}
+Method & $t{=}0.25$ & $t{=}0.50$ & $t{=}0.75$ & $t{=}1.00$ & mean & $\Delta$ \\
+\midrule
+Linear FM
+  & 0.008$\,\pm\,0.001$
+  & 0.027$\,\pm\,0.002$
+  & \underline{0.051}$\,\pm\,0.003$
+  & \textbf{0.083}$\,\pm\,0.006$
+  & \textbf{0.042}$\,\pm\,0.002$
+  & --- \\
+Random OT
+  & 0.009$\,\pm\,0.001$
+  & 0.031$\,\pm\,0.002$
+  & 0.053$\,\pm\,0.004$
+  & 0.094$\,\pm\,0.007$
+  & 0.047$\,\pm\,0.002$
+  & $+10.9\%$ \\
+\ourmodel $\alpha=0$
+  & \textbf{0.007}$\,\pm\,0.001$
+  & \textbf{0.025}$\,\pm\,0.002$
+  & 0.053$\,\pm\,0.002$
+  & \underline{0.086}$\,\pm\,0.005$
+  & \underline{0.043}$\,\pm\,0.001$
+  & $+1.2\%$ \\
+\ourmodel $\alpha=0.5$
+  & 0.007$\,\pm\,0.001$
+  & \underline{0.026}$\,\pm\,0.002$
+  & 0.057$\,\pm\,0.002$
+  & 0.087$\,\pm\,0.005$
+  & 0.044$\,\pm\,0.002$
+  & $+5.1\%$ \\
+\ourmodel $\alpha=1$
+  & 0.009$\,\pm\,0.001$
+  & 0.028$\,\pm\,0.002$
+  & 0.054$\,\pm\,0.002$
+  & 0.089$\,\pm\,0.004$
+  & 0.045$\,\pm\,0.001$
+  & $+6.2\%$ \\
+\ourmodel $\alpha=1.5$
+  & 0.008$\,\pm\,0.001$
+  & 0.029$\,\pm\,0.002$
+  & \textbf{0.051}$\,\pm\,0.002$
+  & 0.088$\,\pm\,0.004$
+  & 0.044$\,\pm\,0.001$
+  & $+4.5\%$ \\
+\ourmodel $\alpha=2$
+  & \underline{0.007}$\,\pm\,0.001$
+  & 0.027$\,\pm\,0.002$
+  & 0.052$\,\pm\,0.002$
+  & 0.091$\,\pm\,0.006$
+  & 0.044$\,\pm\,0.001$
+  & $+4.9\%$ \\
+\bottomrule
+\end{tabular}
+\end{table}

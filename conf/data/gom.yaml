@@ -1,0 +1,14 @@
+name: gom
+# 2-D Lagrangian particle positions; not compositional, no sphere encoding.
+representation: euclidean_raw
+path: null
+# 5-stage subset by default (timepoints 0,2,4,6,8) for table-format
+# parity with the single-cell datasets. Pass data.n_stages=9 to use all
+# 9 available GoM timepoints.
+n_stages: 5
+n_hvg: null
+max_cells_per_stage: null
+holdout_stages: null
+otpfm_holdout: false
+otpfm_split: false
+seed: 42

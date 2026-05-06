@@ -1,0 +1,20 @@
+# @package _global_
+# Narrow k-fold-style probe: train SLERP baseline + the best spectral OT
+# variant (alpha=0.5) on a single training-init seed each, with the goal of
+# repeatedly invoking this experiment under different `data.seed` overrides
+# (42..46) to measure how the SLERP -> alpha=0.5 chained MMD^2 gap shifts
+# across independent stratified train/val/test partitions.
+#
+# Usage:
+#   for s in 42 43 44 45 46; do
+#     .venv/bin/python -m surf.train +experiment=spectral_alpha05_kfold data.seed=$s
+#   done
+#
+# The paired (SLERP, alpha=0.5) per-split delta is the quantity to aggregate;
+# its mean and std across splits is the partition-aware confidence interval
+# on the spectral OT improvement.
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral@alpha=0.5
+eval:
+  n_seeds: 1

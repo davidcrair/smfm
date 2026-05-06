@@ -1,0 +1,11 @@
+# @package _global_
+# Euclidean flow-matching baseline trained in 50-dim PCA latent (fit on
+# pooled training cells), with predictions decoded back to log1p-HVG via the
+# PCA inverse transform before being evaluated in compositional space.
+# This isolates the effect of the latent space dimensionality.
+defaults:
+  - override /space: pca50
+methods:
+  - MM+Linear
+eval:
+  n_seeds: 3

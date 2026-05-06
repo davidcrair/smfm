@@ -1,0 +1,15 @@
+# @package _global_
+# Per-pair vs global spectral head-to-head on GoM under 9-stage OTP-FM
+# holdout. Cross-product of two scaffolds (Tong-style MM+Linear,
+# Rohbeck full MMFM) with three OT costs (Euclidean, per-pair spectral,
+# global spectral) at our headline cell (alpha=0.5, blend=0.25).
+methods:
+  # Tong-style scaffold (joint-sample pairwise OT, linear interpolation)
+  - MM+Linear                                              # Eucl baseline
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.25         # per-pair spectral
+  - MM+Linear+GlobalSpectral@alpha=0.5,blend=0.25          # GLOBAL spectral
+
+  # Rohbeck-style scaffold (cubic spline + sigma_t + MMOT chains)
+  - MM+MMFM-Rohbeck                                        # Eucl baseline
+  - MM+MMFM-Rohbeck+SquaredSpectral@alpha=0.5,blend=0.25   # per-pair spectral
+  - MM+MMFM-Rohbeck+GlobalSpectral@alpha=0.5,blend=0.25    # GLOBAL spectral

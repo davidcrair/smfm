@@ -1,0 +1,6 @@
+# @package _global_
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral
+eval:
+  n_seeds: 1

@@ -1,0 +1,19 @@
+# @package _global_
+# Full 7-method power-law spectral OT cost sweep with the Linear/Euclidean
+# trainer in 50-dim PCA latent space. Same method roster as
+# power_law_sweep_linear.yaml (which trains in sphere-ambient), so the two
+# configs let you compare the same alpha sweep across preprocessing spaces.
+#
+# PCA is fit per-split on the training-cell union (see surf.space.PCASpace.fit).
+# Predictions are decoded back to log1p-HVG and evaluated in compositional
+# gene space, identical to the sphere runs.
+defaults:
+  - override /space: pca50
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+Random   # last, to avoid RNG drift

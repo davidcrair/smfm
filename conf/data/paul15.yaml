@@ -1,0 +1,15 @@
+name: paul15
+representation: sphere
+# null = let load_paul15() fetch the bundled scanpy.datasets.paul15 archive
+# (cached automatically under the scanpy data dir on first call). Override
+# with a local h5ad if you've cached one.
+path: null
+n_hvg: 2000
+# Per-stage cell cap; null = use all cells in each stage (default).
+max_cells_per_stage: null
+holdout_stages: null
+otpfm_holdout: false
+# OTP-FM-style per-stage split (held-out stages: full marginal as eval target,
+# zero training cells; training stages: all cells in both train and eval).
+otpfm_split: false
+seed: 42

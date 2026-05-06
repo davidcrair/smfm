@@ -1,0 +1,35 @@
+# @package _global_
+# Faithful Rohbeck/OTP-FM MMFM reproduction on GoM 9-stage holdout.
+#
+# Reproduces the OTP-FM `configs/gom/defaults.json` training axes that
+# apply to MMFM (i.e. excluding OTP-FM-specific innovations like
+# meanflow consistency loss, ema_ot, time_sampler='uniform_scaled_marginal',
+# and otp_alpha). What's matched here:
+#
+#   1. Network: FlowNetV2 = OTP-FM `FlowNetMLP` (10x128 hidden +
+#      residuals every 2 + LayerNorm + linear x-emb 64 +
+#      sinusoidal t-emb 64).
+#   2. Optimizer: Adam, lr=1e-3, ema_decay=0.99, no grad clip, no warmup.
+#   3. Schedule: epoch-based with reshuffle_each_epoch=true (matches
+#      OTP-FM `Trainer.on_epoch_start.dataset.reshuffle()`). 2000 epochs
+#      at batch_size=64 over the full ~5000-chain GoM dataset =
+#      ~156k iterations (8x more SGD steps than our standard 18k iters).
+#   4. Rohbeck framework: MMOT chains via argmax-EMD on squared-Eucl,
+#      natural cubic spline interpolant, time-varying sigma_t (Eq. 10).
+#   5. sigma_scale=1.0 (paper spec).
+
+methods:
+  - MM+MMFM-Rohbeck                     # paper-faithful MMFM (Rohbeck 2025)
+  - MM+MMFM-OTPFM                       # argmax-chain Tong-style MMFM
+  - MM+MMFM-TorchCFM                    # torchcfm OT-CFM matcher
+
+training:
+  flow_net_arch: v2
+  ema_decay: 0.99
+  grad_clip: 0
+  lr: 1.0e-3
+  batch_size: 64
+  epoch_based: true
+  n_epochs: 2000
+  warmup_iters: 0
+  rohbeck_sigma_scale: 1.0

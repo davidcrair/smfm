@@ -1,0 +1,8 @@
+# @package _global_
+# Headline best-model run on Embryoid Body under the standard 80/10/10
+# stratified split. Trains only the Euclidean baseline (MM+Linear) and
+# the winning spectral cell from the EB grid sweep (alpha=0.5, beta=0).
+# Eval reports MMD^2_otpfm AND exact W_2.
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0.5

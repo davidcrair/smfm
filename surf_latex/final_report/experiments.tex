@@ -1,0 +1,38 @@
+We report results on three main datasets across two different experimental tasks. For the two scientific datasets, we use the Pancreatic Endocrinogenesis (PE) dataset from \citet{bastidas-ponceComprehensiveSingleCell2019} (\texttt{scvelo.datasets.pancreas()}) and the Bone Marrow (BM) dataset from \citet{settyCharacterizationCellFate2019} (\texttt{scvelo.datasets.bonemarrow()}), both distributed by ScVelo \cite{bergenScVeloGeneralizingRNA2020}. These are single-cell RNA sequencing (single-cell) datasets.
+
+For the non-scientific dataset, we use a simulated Gulf of Mexico ocean currents data from \citet{shenMultimarginalSchrodingerBridges} and hold out every other marginal as in \citet{rohbeckMODELINGCOMPLEXSYSTEM2025, theodoropoulosMomentumMultiMarginalSchrodinger2025}.
+
+\subsection{Pancreatic Endrocrinogensis (PE) single-cell RNA sequencing}
+This dataset consists of mouse pancreatic epithelial cells at embryonic day 15.5, with ~3,696 cells and ~28k genes in the full dataset. We group clusters into 5 sequential developmental stages along the secondary endocrine transition (Ductal, Ngn3 low EP, Ngn3 high EP, Pre-endocrine, Endocrine). The results, comparing to a Linear FM baseline, are shown in Table \ref{tab:pe_log1p_eucknn} and Figure \ref{fig:pancreas_pca}. We see a consistent improvement with \ourmodel in mean $\mathrm{MMD}^2$ across the sweep of $\alpha$, with $\beta$ fixed at $0$ (pure spectral OT, no Euclidean distance term). We see the best performance at every marginal except the first intermediate marginal ($t=0.25$) when training \ourmodel with $\alpha=2$, with a 24.4\% decrease in mean $\mathrm{MMD}^2$ compared to the Linear FM baseline. These results are shown for data that is log1p encoded (normalize total counts to 10k and then pointwise $x=\log(x+1)$), when we instead perform Helligner sphere encoding (see above), we do not see improvements by using \ourmodel with spectral OT cost (see Appendix Table \ref{tab:pe_sphere}).
+
+\input{tables/pe_log1p_eucknn}
+
+\begin{figure*}[t]
+\centering
+\includesvg[width=\linewidth]{figures/pancreas_pca_predictions_split42}
+\caption{PC1 vs PC2 of Pancreatic Endrocrinogenesis dataset predictions, sweeping $\alpha$: The leftmost panel shows the ground truth cells. Second panel shows Linear FM baseline, remaining panels show \ourmodel with spectral-cost OT at different values of $\alpha$, with $\beta=0$ fixed. Predictions are projecting using PCA fit on test cells.}
+\label{fig:pancreas_pca}
+\end{figure*}
+
+\subsection{Bone Marrow single-cell RNA sequencing}
+This is a Human CD34+ progenitor cells single-cell RNA sequencing dataset containing ~5,780 cells and ~14k genes. We subset to the erythroid sub-tree and drop all other lineages to form a mostly linear structure (HSC early, HSC late, Precursor, Erythroid Early, Erythroid Terminal). After filtering to the erythroid lineage, we are left with ~3,775 cells across the 5 stages. The results, comparing to a Linear FM baseline, are shown in Table \ref{tab:bm_sphere} and Figure \ref{fig:bonemarrow_pca}. For the bone marrow dataset, we show results when the data is encoded using the Hellinger sphere encoding, because we find that using spectral OT costs does not improve performance over the linear FM baseline when encoding data in log1p space (see Appendix Table \ref{tab:bm_log1p_eucknn}). Again, we see an improvement across all marginals for \ourmodel, with \ourmodel $\alpha=1$ having the best mean performance and performance on the last two marginals, while \ourmodel $\alpha=0$ has the best performance on the first two intermediate marginals ($t=0.25$ and $t=0.50$). \ourmodel $\alpha=1$ shows a 44.3\% improvement in mean $\mathrm{MMD}^2$ compared to the Linear FM baseline. For this test, we also fix $\beta=0$.
+
+\input{tables/bm_sphere}
+
+\begin{figure*}[t]
+\centering
+\includesvg[width=\linewidth]{figures/bonemarrow_pca_predictions_split42}
+\caption{PC1 vs PC2 of Bone Marrow dataset predictions, sweeping $\alpha$: The leftmost panel shows the ground truth cells. Second panel shows Linear FM baseline, remaining panels show \ourmodel with spectral-cost OT at different values of $\alpha$, with $\beta=0$ fixed. Predictions are projecting using PCA fit on test cells.}
+\label{fig:bonemarrow_pca}
+\end{figure*}
+
+\subsection{Gulf of Mexico Ocean Currents}
+The Gulf of Mexico ocean currents dataset is built by \citet{shenMultimarginalSchrodingerBridges} and contains simulated particles that evolve based on a measured ocean current vector field. It contains 1000 particles across 9 marginals. Unlike the single-cell datasets, for this task, we follow \citet{rohbeckMODELINGCOMPLEXSYSTEM2025} and \citet{shenMultimarginalSchrodingerBridges} in using 5 marginals (odd numbers) as the training data and 4 marginals as the testing data. For the 4 held-out marginals, all 100 samples are in the test set, for the 5 training marginals, we perform an 80/10/10 train/val/test split to evaluate on unseen particles from those marginals at test-time. We perform a grid search over the $\alpha$ and $\beta$ parameters specified in \ref{sec:spec_dist_fam}, a total of 25 combinations, and compare the results of the best model to a linear FM baseline. Results are shown in Table \ref{tab:gom_otpfm9_w2}, where we report $W_2$ on each marginal and averaged over the held-out and train marginals for both models. We show that \ourmodel with $\alpha=0.5,\beta=0.0$ outperforms the linear FM baseline on every marginal, by an average of 45.5\% on the held-out marginals and $54.1\%$ on the train marginals.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.7\linewidth]{figures/gom_trajectories.pdf}
+\caption{GoM trajectories: Visualization of predicted trajectories on Gulf of Mexico simulated dataset. Left panel shows Linear FM with Euclidean optimal transport cost, right panel shows best \ourmodel sweeping $\alpha$ with $\beta=0$ fixed. Held-out marginals are shown with black outlines on the point. First marginal is red, last marginal is purple. The trajectories shown in both panels are predicted, all the points shown are the ground truth marginals.}
+\label{fig:gom_trajectories}
+\end{figure*}
+\input{tables/gom_ho_w_2}

@@ -1,0 +1,43 @@
+\paragraph{OT Couplings and Sampling}
+To compute OT couplings, we use uniform empirical weights and solve EMD for each adjacent pair of marginals. We precompute couplings over the entire union of adjacent marginals and sample from the coupling to produce batches for training. There is a limit to how far this method can scale, but \citet{tongImprovingGeneralizingFlowbased2024} introduce minibatch-OT which solves this problem by computing OT couplings during training on minibatches.
+
+\paragraph{Flow Network}
+We use a time-conditioned MLP to learn the velocity field $u_\theta(x, t)$. By default, we concatenate the time scalar $t$ to the position input $x_t$ as input to the MLP. We use 4 hidden layers, of width 256, with SiLU activations. The MLP produces a vector velocity output of dimension $D$.
+
+\paragraph{Optimization}
+We use the \texttt{Adam} optimizer, training with PyTorch, using a learning rate of $3\times 10^{-4}$ and a batch size of 512. We train each model for 3000 iterations. We train each model on 5 different data split seeds and 5 different initialization seeds for a total of 25 models per configuration. In tables, we report the mean over these 25 models $\pm$ std, after averaging over the 5 initialization splits per seed. We report scores primarily on two metrics $\mathrm{MMD}^2$ and $W_2$.
+
+\paragraph{Common preprocessing} Our preprocessing for the single-cell datasets consists of normalizing the total counts in each cell (sample) to 10,000, then applying a log1p ($x=\log(1+x)$) transform, and subsetting to the top 2,000 highly variable genes (HVGs).
+
+\paragraph{Hellinger sphere embedding}
+For experiments where we use the Hellinger sphere embedding, we map each nonnegative count vector $x$ of the single-cell data to a probability vector $p_i=\dfrac{x_i}{\sum_j x_j}$ and then embed it as $h_i=\sqrt{p_i}$. This embeds the samples onto the positive orthant of the unit sphere. Euclidean distances in this embedding correspond to Hellinger distances up to a constant factor, and spherical geodesics correspond to Fisher-Rao geometry on the simplex \cite{davisFisherFlowMatching}. When we use this representation, we build the kNN graph with cosine distance in the embedded sphere coordinates instead of Euclidean distance.
+
+\paragraph{Train/val/test split}
+We hold out 10\% of samples for the validation and test sets, training on a random 80\% of samples in each marginal. We report results over 5 seeds, which determine the train-val-test splits.
+
+\paragraph{Evaluation Task}
+We perform a chained evaluation, integrating from the $t=0$ marginal through each intermediate marginal to end at the $t=1$ marginal. 
+
+\paragraph{$\mathbf{MMD^2}$}
+Given a predicted marginal distribution $\hat{X}=\{\hat{x}_1,\dots,\hat{x}_n\}$ and a true marginal distribution $\hat{Y}=\{y_1,\dots,y_n\}$ we report the empirical $\mathrm{MMD}^2$ with a single RBF kernel:
+\begin{equation}
+\begin{aligned}
+\widehat{\mathrm{MMD}^2}(\hat{X},Y)
+&=\frac{1}{n(n-1)}\sum_{i\neq j} k(\hat x_i, \hat x_j)\\
+&+\frac{1}{m(m-1)}\sum_{i\ne j}k(y_i,y_j)\\
+&-\frac{2}{nm}\sum_{i,j}k(\hat x_i, y_j)
+\end{aligned}
+\label{eq:mmd_sq}
+\end{equation}
+with the Gaussian kernel $k(u,v)=\exp\left(\dfrac{-|u-v|^2}{2\sigma^2}\right)$, where $n=|\hat X|$ and $m=|Y|$.
+
+$\sigma$ is set per evaluation to be the median heuristic on the union $\hat X \cup Y$:
+$$\sigma =\mathrm {median}\big(|z_i-z_j|\big)_{i,j},\quad z\in \hat X \cup Y$$
+which makes the metric scale-adaptive.
+We also tested MMD using a multi-scale 5-kernel variant and did not find a significant difference from the $\mathrm{MMD^2}$ metric described above, so we only show the $\mathrm{MMD^2}$ described for brevity.
+
+\paragraph{$\mathbf{W_2}$}
+When reported, the $W_2$ used is the exact empirical 2-Wasserstein distance, already described in Equation \ref{eq:static_ot}.
+
+\paragraph{Linear FM Baseline}
+As a baseline we train the same multi-marginal Flow Matching model but use standard Euclidean cost to compute OT couplings between adjacent marginals as in \citet{tongImprovingGeneralizingFlowbased2024}. For each adjacent pair $(\chi_{t_k},\chi_{t_{k+1}})$, samples are paired by solving the OT problem with squared Euclidean ground cost and we train using the linear conditional path $x_t=(1-t)x_0+tx_1$ with target velocity $x_1-x_0$. This baseline isolates the effect of replacing the OT ground cost with spectral-based costs. This is not the full spline-interpolation-based MMFM model as in \citet{rohbeckMODELINGCOMPLEXSYSTEM2025}, we use linear interpolations between adjacent marginals to isolate the contribution of the OT coupling cost.

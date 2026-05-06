@@ -1,0 +1,11 @@
+# @package _global_
+# 4-way head-to-head on GoM under the 9-stage OTP-FM holdout, including
+# the FULL Rohbeck 2025 MMFM framework (cubic-spline interpolant +
+# time-varying variance + MMOT chains) with both Euclidean and
+# spectral OT costs, alongside the simpler pairwise-MMFM baselines.
+methods:
+  - MM+Linear                                            # Tong+2023 MMFM (joint-sample)
+  - MM+MMFM-OTPFM                                        # Atanackovic+2024 chain-MMFM
+  - MM+MMFM-Rohbeck                                      # Rohbeck+2025 full MMFM (Eucl OT)
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.25       # ours, Tong scaffold
+  - MM+MMFM-Rohbeck+SquaredSpectral@alpha=0.5,blend=0.25 # ours, Rohbeck scaffold

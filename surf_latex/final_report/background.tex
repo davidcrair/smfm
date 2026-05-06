@@ -1,0 +1,44 @@
+\subsection{Flow Matching}
+In Flow Matching (FM) we want to learn a velocity field that can map samples from a source distribution to a target distribution. The first component in training a flow matching model is a time-dependent probability path $(\mu_t)_{t\in[0,1]}$ on $\mathbb R^d$ that interpolates between the source distribution $\mu_0$ and the target distribution $\mu_1$. When the path $\mu_t$ has density $\rho_t$, the path satisfies the continuity equation $\frac{\partial \rho_t}{\partial t}=-\nabla \cdot(\rho_t u_t)$, where $u_t\colon \mathbb R^d\to \mathbb R^d$ is the velocity field for the flow.
+
+We define the flow as $\psi_t\colon [0,1]\times \mathbb R^d\to \mathbb R^d$ which is a flow map induced by the ODE, $X_t=\psi_t(X_0)$, when applied to the random variable $X_0\sim \mu_0$. The goal of Flow Matching, or generative flow modeling in general, is to train a model that parametrizes a flow $\psi_t$ such that $X_1=\psi_1(X_0)\sim \mu_1$. We do this by regressing a neural network with parameters $\theta$ to learn $u_t$, so we want $u_t^\theta=u_t$. One problem with this setup without modification is that the marginal probability path $\mu_t$ is difficult to sample from and complicated for arbitrary source and target distributions.
+
+To work around this problem, we can define a conditional probability path $\rho_t(x\mid z)$ and the associated conditional velocity field $u_t(x\mid z)$, where $z$ can be chosen strategically to simplify the probability path. In practice we choose $z=(x_0,x_1)$  where $z\sim \pi,\pi\in\Pi(\mu_0,\mu_1)$, where $\pi$ is a coupling of $\mu_0,\mu_1$ such that the conditional probability path is the straight Dirac path between $x_0$ and $x_1$: $x_t=tx_1+(1-t)x_0$. One nice thing about this path is that the velocity is constant w.r.t $t$, it is $x_1-x_0$ everywhere. Now we can express the Flow Matching loss for this conditional probability path:
+
+\begin{equation}
+\begin{aligned}
+\mathcal L_{\mathrm{CFM}}(\theta)
+&\coloneqq
+\mathbb E_{t,z,x_t}
+\Bigl[
+\bigl\|
+u_t^\theta(x_t)-u_t(x_t\mid z)
+\bigr\|^2
+\Bigr].
+\end{aligned}
+\label{eq:fm_loss}
+\end{equation}
+where $t\sim\mathcal U[0,1]$, $z=(x_0,x_1)$, and $x_t=(1-t)x_0+tx_1$.
+
+Using the fact that our conditional path velocity is a constant $x_1-x_0$, we can simplify the loss above, replacing $u_t(x_t\mid z)$ with $(x_1-x_0)$. Importantly, \citet{lipmanFlowMatchingGenerative2023} and \citet{tongImprovingGeneralizingFlowbased2024} show that using this conditional flow matching loss is equivalent to using an unconditioned loss, i.e. regressing to $u_t(x_t)$ instead of $u_t(x\mid z)$. The main advantage of Flow Matching over previous methods that also learn a flow, such as Neural ODEs , is that Flow Matching does not require the simulation of an ODE during training \cite{lipmanFlowMatchingGuide2024}.
+
+\subsection{Optimal Transport}
+In practice, the source and target distributions we used to train Flow Matching models are empirical distributions. Instead of randomly pairing samples from the source and target distribution, a common extension, proposed by \citet{tongImprovingGeneralizingFlowbased2024} is to use an optimal transport (OT) coupling between (evenly-size) source and target distributions. The standard static optimal transport problem is to find a coupling between two distributions, $\mu$ and $\nu$ that minimize some cost between paired samples. For squared Euclidean cost $c(x,y)=\|x-y\|_2^2$, the minimum cost coupling between distributions is the 2-Wasserstein distance between the distributions:
+\begin{equation}
+    W^2_2(\mu,\nu)=\inf_{\pi\in \Pi(\mu,\nu)}\int_{\mathbb R^d \times \mathbb R^d}c(x,y)d\pi(x,y),
+    \label{eq:static_ot}
+\end{equation}
+where $\Pi(\mu,\nu)$ is the set of all joint probability measures on $\mathbb R^d\times \mathbb R^d$ with marginals $\mu$ and $\nu$.
+We can reframe 2-Wasserstein distance to instead be an optimization problem over a vector field $u_t$ which acts as a flow to transform the source distribution $\mu$ to the target distribution $\nu$ (or vice-versa if negated):
+\begin{equation}
+    W_2^2(\mu, \nu)=\inf_{\rho_t,u_t}\int_0^1\int_{\mathbb R^d}\rho_t(x)\|u_t(x)\|_2^2dxdt,
+    \label{eq:dynamic_ot}
+\end{equation}
+where $\rho_t(x)\ge 0$ with endpoint constraints $\rho_0=\mu,\rho_1=\nu$.
+
+\subsection{Multi Marginal Flow Matching (MMFM)}
+
+Flow Matching only considers two distributions (marginals) whereas multi-marginal. For multi-marginal Flow Matching, we have the observed dataset with $K$ distributions $\chi_{t_k}=\{x_{t_k}^{(i)}\}_{i=1}^{n_k}\subset \Bbb R^d$ with empirical marginal $\mu_{t_k}=\frac{1}{n_k}\sum_{i=1}^{n_k}\delta_{x_{t_k}^{(i)}}$. MMFM aims to learn a flow that transports the starting distribution through intermediate marginal distributions to an end distribution, satisfying the boundary conditions a all intermeidate marginals $k=1,\dots,K$. \citet{rohbeckMODELINGCOMPLEXSYSTEM2025} show that when the cost structure of the multi-marginal optimal transport (MMOT) problem is pairwise additive, MMOT over $K+1$ marginals reduces to $K$ independent two-marginal OT problems. When $z\coloneqq (x_0,\dots,x_K)$, the MMFM objective is the same as the CFM objective in Equation \ref{eq:fm_loss} with our new $z$ instead of $z=(x_0,x_1)$.
+
+
+

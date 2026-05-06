@@ -1,0 +1,46 @@
+# @package _global_
+# Full alpha x blend grid sweep on GoM for the heatmap figure.
+# alpha in {0, 0.5, 1, 1.5, 2} x blend in {0, 0.25, 0.5, 0.75}
+# = 20 spectral cells + MM+Linear (blend=1.0 baseline) = 21 methods.
+#
+# Reveals two axes of behavior:
+#   - alpha controls the spectral weighting (uniform truncation -> biharmonic).
+#   - blend controls the Euclidean-regularization mix (0=pure spectral,
+#     1=pure Euclidean).
+#
+# Connecting back to the precondition story: under disconnected graphs,
+# any (alpha, blend=0) cell should fail (precondition violation); the
+# blend axis is the proposed fix; we expect best cell at moderate alpha
+# and high blend.
+methods:
+  - MM+Linear
+  # alpha=0 (uniform spectral)
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=0,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=0,blend=0.75
+  # alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.75
+  # alpha=1 (commute-time)
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=1,blend=0.75
+  # alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=1.5,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=1.5,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=1.5,blend=0.75
+  # alpha=2 (biharmonic)
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+SquaredSpectral@alpha=2,blend=0.25
+  - MM+Linear+SquaredSpectral@alpha=2,blend=0.5
+  - MM+Linear+SquaredSpectral@alpha=2,blend=0.75
+eval:
+  n_seeds: 1
+  mmd_protocol: both
+  compute_fgd: false
+  compute_w2: true              # exact W_2 (network simplex); feasible at N <= 100 cells/marginal

@@ -1,0 +1,15 @@
+# @package _global_
+# Euclidean flow-matching trained on the *same* sphere-encoded data as
+# MM+SLERP -- log1p -> compositional -> sqrt -> normalize. The Euclidean
+# trainer treats these vectors as generic R^D coordinates: straight-line
+# conditional paths (no SLERP), unconstrained network outputs (no tangent
+# projection), squared-Euclidean OT cost. This isolates the *interpolation
+# geometry* of the flow from the training data manifold; MM+SLERP and this
+# baseline see identical OT inputs and identical eval targets, differing
+# only in whether they respect sphere curvature during training/inference.
+defaults:
+  - override /space: sphere
+methods:
+  - MM+Linear
+eval:
+  n_seeds: 3

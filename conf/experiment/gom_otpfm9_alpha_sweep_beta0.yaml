@@ -1,0 +1,27 @@
+# @package _global_
+# GoM 9-stage OTP-FM hold-out, **alpha sweep with beta=0 (pure spectral)**,
+# 5 init seeds (eval.n_seeds=5) × 5 data splits, with exact W_2 as the
+# primary metric.
+#
+# Companion to gom_otpfm9_best (which trains only the winning best-cell);
+# this gives the full alpha sweep at the same protocol so we can show the
+# effect of alpha along the pure-spectral axis (no Euclidean blend) under
+# proper init-variance averaging.
+#
+# Methods:
+#   - MM+Linear                                 (Euclidean OT baseline)
+#   - MM+Linear+Random                          (random-pairing negative control)
+#   - MM+Linear+SquaredSpectral@alpha=0..2      (pure spectral at alpha values)
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+Random
+eval:
+  n_seeds: 5
+  mmd_protocol: otpfm           # multi-scale MMD^2 for additional context
+  compute_fgd: false
+  compute_w2: true              # exact W_2; feasible at N=111 cells/marginal

@@ -1,0 +1,64 @@
+\begin{table*}[t]
+\centering
+\caption{Bone marrow, Hellinger sphere encoding. Chained $\mathrm{MMD}^2$ at four evaluation stages, mean $\pm$ over 5 splits $\times$ 5 init seeds.}
+\label{tab:bm_sphere}
+\renewcommand{\arraystretch}{1.15}
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{lcccccc}
+\toprule
+& \multicolumn{4}{c}{MMD$^2$ at evaluation time / stage} & & \\
+\cmidrule(lr){2-5}
+Method & $t{=}0.25$ & $t{=}0.50$ & $t{=}0.75$ & $t{=}1.00$ & mean & $\Delta$ \\
+\midrule
+Linear FM
+  & 0.019$\,\pm\,0.003$
+  & 0.151$\,\pm\,0.014$
+  & 0.419$\,\pm\,0.034$
+  & 0.319$\,\pm\,0.045$
+  & 0.227$\,\pm\,0.022$
+  & --- \\
+Random OT
+  & 0.017$\,\pm\,0.004$
+  & 0.094$\,\pm\,0.004$
+  & 0.329$\,\pm\,0.036$
+  & 0.270$\,\pm\,0.053$
+  & 0.177$\,\pm\,0.022$
+  & $-21.9\%$ \\
+\ourmodel $\alpha=0$
+  & \textbf{0.015}$\,\pm\,0.005$
+  & \textbf{0.058}$\,\pm\,0.011$
+  & \underline{0.256}$\,\pm\,0.056$
+  & \underline{0.201}$\,\pm\,0.062$
+  & \underline{0.133}$\,\pm\,0.031$
+  & $-41.5\%$ \\
+\ourmodel $\alpha=0.5$
+  & 0.017$\,\pm\,0.005$
+  & 0.064$\,\pm\,0.006$
+  & 0.260$\,\pm\,0.034$
+  & 0.218$\,\pm\,0.046$
+  & 0.140$\,\pm\,0.020$
+  & $-38.4\%$ \\
+\ourmodel $\alpha=1$
+  & 0.017$\,\pm\,0.006$
+  & \underline{0.059}$\,\pm\,0.010$
+  & \textbf{0.242}$\,\pm\,0.034$
+  & \textbf{0.187}$\,\pm\,0.028$
+  & \textbf{0.126}$\,\pm\,0.017$
+  & $-44.3\%$ \\
+\ourmodel $\alpha=1.5$
+  & \underline{0.016}$\,\pm\,0.005$
+  & 0.077$\,\pm\,0.014$
+  & 0.310$\,\pm\,0.044$
+  & 0.239$\,\pm\,0.047$
+  & 0.160$\,\pm\,0.026$
+  & $-29.3\%$ \\
+\ourmodel $\alpha=2$
+  & 0.017$\,\pm\,0.006$
+  & 0.082$\,\pm\,0.006$
+  & 0.312$\,\pm\,0.026$
+  & 0.253$\,\pm\,0.042$
+  & 0.166$\,\pm\,0.017$
+  & $-26.8\%$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

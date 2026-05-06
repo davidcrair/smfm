@@ -1,0 +1,25 @@
+# @package _global_
+# Power-law spectral OT cost sweep with the *Euclidean* (Linear FM / OT-CFM)
+# trainer instead of the sphere-trainer used in power_law_sweep.yaml. Same
+# `1/lambda^alpha` family, alpha in {0, 0.5, 1, 1.5, 2}, but the conditional
+# flow is straight-line linear interpolation in the encoded space (sphere
+# orthant treated as flat R^D when `space=sphere`, or PCA latent if you
+# override space).
+#
+# This experiment isolates the contribution of the *cost choice* from the
+# *flow geometry*: pair MM+Linear+SquaredSpectral with MM+Linear (Euclidean OT)
+# to test whether the spectral OT family generalizes beyond Fisher Flow.
+defaults:
+  - override /space: sphere
+methods:
+  - MM+Linear                                    # Euclidean OT baseline
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=0.5
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+SquaredSpectral@alpha=1.5
+  - MM+Linear+SquaredSpectral@alpha=2
+  - MM+Linear+Random                             # random-pairing negative control (placed last
+                                                 # to avoid perturbing the RNG seed sequence
+                                                 # of the spectral methods)
+eval:
+  n_seeds: 3

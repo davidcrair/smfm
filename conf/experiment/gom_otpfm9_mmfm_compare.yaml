@@ -1,0 +1,12 @@
+# @package _global_
+# 3-way head-to-head on GoM under the 9-stage OTP-FM holdout: the
+# Tong+2023-style MMFM (joint-sample OT pairs each iter, our existing
+# MM+Linear baseline) vs the OTP-FM-paper MMFM (argmax-chain OT
+# alignment across all train stages, MM+MMFM-OTPFM) vs the spectral
+# winner from the alpha x blend grid (MM+Linear+SquaredSpectral
+# @alpha=0.5,blend=0.25). Eval reports MMD^2_otpfm and exact W_2 so
+# the per-stage numbers can sit next to OTP-FM Table 2.
+methods:
+  - MM+Linear
+  - MM+MMFM-OTPFM
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.25

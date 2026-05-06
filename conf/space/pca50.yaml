@@ -1,0 +1,3 @@
+name: pca
+n_components: 50
+random_state: 42

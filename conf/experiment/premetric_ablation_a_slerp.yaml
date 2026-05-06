@@ -1,0 +1,5 @@
+# @package _global_
+methods:
+  - MM+SLERP
+eval:
+  n_seeds: 1

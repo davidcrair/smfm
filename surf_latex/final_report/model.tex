@@ -1,0 +1,125 @@
+\subsection{Spectral Distance Family for Optimal Transport Couplings}\label{sec:spec_dist_fam}
+We replace the standard squared Euclidean ground cost used introduced in OT-CFM \cite{tongImprovingGeneralizingFlowbased2024} and subsequent models with a squared spectral distance in the K-dimensional Laplacian eigenbasis of the kNN graph on the union of adjacent pairs of marginals.
+
+Given adjacent empirical marginal distributions $\chi_k$ and $\chi_{k+1}$, we compute the kNN graph of $\bar \chi=\chi_{k\colon k+1}=\chi_{t_k}\sqcup \chi_{t_{k+1}}$, using Euclidean distances to determine nearest neighbors:
+\begin{equation}
+    W_{ij}=
+    \begin{cases}
+        \exp \left(-\dfrac{\|x_i-x_j\|_2^2}{\sigma^2}\right),&j\in \mathrm{kNN}(i),\\[4pt]
+        0,&\text{otherwise}.
+    \end{cases}
+\label{eq:knn_graph}
+\end{equation}
+where $\sigma$ is the median pairwise Euclidean distance. When we embed the data onto the sphere using the Hellinger sphere embedding, we switch the Euclidean distance in the formula above to instead use cosine distance $d_{\cos}(x_i,x_j)=1-\dfrac{\langle x_i,x_j\rangle}{\|x_i\|_2\cdot \|x_j\|_2}$ which reduces to $1-\langle x_i,x_j\rangle$ for unit-norm sphere embeddings. We then use this distance in the same Gaussian affinity kernel and set $\sigma$ to be the median pairwise cosine distance.
+
+Then compute the degree matrix $D_{ii}=\sum_jW_{ij}$ and the normalized graph Laplacian:
+\begin{equation}
+    L_{\mathrm{sym}} = I - D^{-1/2} W D^{-1/2}
+    \label{eq:normalized_laplacian}
+\end{equation}
+We then perform spectral decomposition and drop the trivial all constant $0$-eigenvalue and keep the next $K$ pairs:
+\begin{equation}
+Lu_k=\lambda _ku_k,\qquad k=1,\dots,K
+\label{eq:laplacian_eigenpairs}
+\end{equation}
+
+We then weight the spectral embedding with a hyperparameter $\alpha$:
+\begin{equation}
+\bigl (\Phi_\alpha(x_i)\bigr)_k=\lambda_k^{-\alpha/2}u_k(i)\qquad k=1,\dots,K
+\label{eq:spectral_embedding}
+\end{equation}
+We normalize the graph Laplacian eigenvectors $u_k$ to be orthonormal such that the $\alpha$ scaling controls the relative emphasis on low-frequency graph modes, where a larger value of $\alpha$ gives more weight to low frequency variation, since smoother eigenvectors have eigenvalues closer to $0$ and $\forall k,\lambda_k\in[0,2]$ (for the symmetric normalized graph Laplacian).
+
+For the OT ground cost between $x_i$ and $x_j$ we use the squared spectral cost:
+\begin{equation}
+    \begin{aligned}
+        C_\alpha^{\text{spectral}}(i,j)
+        &=\left | \Phi_\alpha(x_i)-\Phi_\alpha(x_j) \right|_2^2\\
+        &=\sum_{k=1}^K\frac{\bigl(u_k(i)-u_k(j) \bigr)^2}{\lambda_k^\alpha}
+\end{aligned}
+\label{eq:spectral_cost}
+\end{equation}
+
+When $\alpha=0$ this distance is the Laplacian eigenmap distance, the Euclidean distance in the first $K$ laplacian eigenmap coordinates. When $\alpha=2$, this distance is the biharmonic distance \cite{lipmanBiharmonicDistance2010}. If $w(\lambda)=e^{-2t\lambda}$ we have diffusion distance \cite{coifmanDiffusionMaps2006}.
+
+When the union of two marginals is disconnected in the kNN graph for a given $k$, the graph Laplacian becomes a block diagonal matrix, with $\lambda_2=0$. We discard $\lambda_1=0$ since it is always the uniform constant vector. For $\lambda_2=0$, we weight that component in the spectral distance as $\lambda_2^{-\alpha} \to \infty$ which we clamp to some large number. If each marginal forms one connected component in the kNN with no cross-marginal connections, this reduces to random pairing between samples in marginals, since the pairwise distance matrix reduces to the scaled identity.
+
+For this reason, we introduce a convex combination with the normal squared Euclidean ground cost, weighting it by hyperparameter $\beta$, mean-normalizing both costs to be scale-invariant:
+\begin{equation}
+C_{\alpha,\beta}(i,j)=(1-\beta)\tilde C_\alpha^{\text{spectral}}(i,j)+\beta\tilde C^{\text{euclidean}}(i,j)
+\label{eq:blended_cost}
+\end{equation}
+where $\tilde C=\frac{C}{\text{mean}(C)}$.
+
+Now, with the blended cost $C_{\alpha,\beta}$, the Euclidean component acts as a fallback when the spectral graph is disconnected. In the special case where adjacent marginals are disconnected in the kNN graph, the spectral cross-marginal cost decomposes to $C_{ij}=c+a_i+b_j$ where $a_i$ and $b_j$ depend only on the source point $i$ and the target point $j$, with no cross-dependency and $c$ is a constant. This means that the cost is constant over all feasible OT plans, so for $\beta> 0$, this recovers Euclidean OT. For $\beta=0$, this results in OT with constant cost, which produces random pairings.
+
+Our full spectral-cost OT problem without blending:
+\begin{equation}
+    \pi^*=\arg \min_{\pi\in \Pi(\mu_0,\mu_1)}\sum_{ij}C^{\mathrm{spectral}}_\alpha(x_i,x_j)\pi_{ij}
+    \label{eq:spectral_ot}
+\end{equation}
+This is the Kantorovich OT cost with our spectral ground cost.
+
+
+We perform a power law sweep where $w_\alpha(\lambda)=\lambda^{-\alpha}$ over $\alpha\in \{0, 0.5, 1, 1.5, 2\}$ and sweep $\beta\in \{0,0.25,0.5,0.75,1\}$. We also compute spectral OT pairings between adjacent marginals for the full training dataset and subset pairs to form minibatches during training.
+
+\begin{table}[t]
+\centering
+\caption{Where geometry enters different flow matching variants. $\star$ ROT-RFM is Optimal Transport Riemannian Flow Matching, a proposed method, see Section \ref{ch:conclusion}.}
+\label{tab:geometry_ot_taxonomy}
+\small
+\begin{tabular}{lccc}
+\toprule
+Method & \shortstack{OT\\coupling} & \shortstack{Geometry in\\OT Cost} & \shortstack{Geometry in\\path/velocity} \\
+\midrule
+CFM & No & No & No \\
+OT-CFM & Yes & Euclidean & No \\
+RFM & No & No & Yes \\
+\ourmodel (ours) & Yes & Spectral graph & No \\
+\shortstack{OT-RFM$^\star$\\(future work)} & Yes & Riemannian & Yes \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\subsection{The \ourmodel Algorithm}
+For each adjacent pair of marginals, $\chi_{t_k}, \chi_{t_{k+1}}$ we compute the full $H\times H$ cost matrix where $H$ is the number of samples in each marginal. Then, we solve the full OT coupling problem.
+
+In each training step, we sample from pairs of the OT coupling to form a batch $\mathcal B$. We then compute $u_t$ for each pair in this batch and compute the FM loss for this batch. One downside of this precompute-OT method is that it doesn't scale past around 10k cells per marginal, but this can be extended easily to Minibatch-OT, where a fresh OT coupling is computed for each batch \cite{tongImprovingGeneralizingFlowbased2024}.
+
+
+\begin{algorithm}[t]
+\caption{Spectral OT Coupling}
+\label{alg:spectral_ot}
+\begin{algorithmic}[1]
+\STATE Build kNN graph on $\chi_{t_k}\sqcup\chi_{t_{k+1}}$
+\STATE Compute $L_{\mathrm{sym}}=I-D^{-1/2}WD^{-1/2}$
+\STATE Compute eigenpairs $(\lambda_k,u_k)_{k=1}^K$
+\STATE Form $C_\alpha^{\mathrm{spec}}(i,j)$
+\STATE Solve OT with ground cost $C_\alpha^{\mathrm{spec}}$
+\STATE \textbf{return} coupling $\pi^\star$
+\end{algorithmic}
+\end{algorithm}
+
+% \begin{algorithm}[t]
+% \caption{\ourmodel Training}
+% \label{alg:smfm_training}
+% \begin{algorithmic}[1]
+% \REQUIRE Marginals $\{\chi_{t_k}\}_{k=0}^K$, couplings $\{\pi_k^\star\}_{k=0}^{K-1}$
+% \REQUIRE Velocity network $u_\theta$, number of iterations $N$
+% \FOR{$n=1,\ldots,N$}
+%   \STATE Sample adjacent stage $k$
+%   \STATE Sample paired endpoints $(x_0,x_1)\sim \pi_k^\star$
+%   \STATE Sample $t\sim\mathcal U[0,1]$
+%   \STATE Set $x_t=(1-t)x_0+t x_1$
+%   \STATE Set target velocity $v=x_1-x_0$
+%   \STATE Take a gradient step on
+%   \[
+%   \left\|u_\theta(x_t,t)-v\right\|_2^2
+%   \]
+% \ENDFOR
+% \STATE \textbf{return} trained velocity field $u_\theta$
+% \end{algorithmic}
+% \end{algorithm}
+
+

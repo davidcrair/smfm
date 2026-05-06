@@ -1,0 +1,8 @@
+# @package _global_
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral
+  - MM+PremetricBiharmonic-SphereOT
+  - MM+PremetricBiharmonic-SpectralOT
+eval:
+  n_seeds: 1

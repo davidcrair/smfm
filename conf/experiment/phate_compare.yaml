@@ -1,0 +1,7 @@
+# @package _global_
+methods:
+  - MM+SLERP
+  - MM+SLERP+PHATE-Euclidean
+  - MM+SLERP+PHATE-SphereArc
+eval:
+  n_seeds: 1

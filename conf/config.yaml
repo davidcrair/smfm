@@ -1,0 +1,19 @@
+defaults:
+  - data: embryoid
+  - training: default
+  - model: default
+  - eval: default
+  - space: pca10
+  - _self_
+
+methods:
+  - MM+SLERP
+  - MM+SLERP+SquaredSpectral
+
+hydra:
+  run:
+    dir: outputs/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: outputs/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  job:
+    chdir: true

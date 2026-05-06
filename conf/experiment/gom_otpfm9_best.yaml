@@ -1,0 +1,10 @@
+# @package _global_
+# Headline best-model run on GoM under the 9-stage OTP-FM holdout.
+# Trains only the Euclidean baseline (MM+Linear) and the winning
+# spectral-blend cell from the grid sweep (alpha=0.5, beta=0.25), so
+# eval can afford to compute exact Wasserstein-2 in addition to the
+# usual MMD^2_otpfm. The reported numbers in the paper for
+# 'spectral wins on GoM under temporal holdout' come from this config.
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0.5,blend=0.25

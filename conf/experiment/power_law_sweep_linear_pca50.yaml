@@ -1,0 +1,21 @@
+# @package _global_
+# Preprocessing-axis ablation: train the same Euclidean (Linear FM) trainer +
+# spectral OT cost family in *PCA-50 latent space* instead of the sphere-encoded
+# ambient space used by power_law_sweep_linear.yaml. PCA is fit per split on
+# the union of training cells across all stages (see surf.space.PCASpace.fit);
+# predictions are decoded back to log1p-HVG via the inverse PCA transform and
+# evaluated in compositional gene space, identical to the sphere runs.
+#
+# Companion to power_law_sweep_linear.yaml (sphere). Trimmed method set
+# (3 methods instead of 6) to halve compute -- alpha in {0, 1} captures
+# the most informative slice of the spectral family for the cross-space
+# ablation table.
+defaults:
+  - override /space: pca50
+methods:
+  - MM+Linear
+  - MM+Linear+SquaredSpectral@alpha=0
+  - MM+Linear+SquaredSpectral@alpha=1
+  - MM+Linear+Random   # placed last; see power_law_sweep_linear.yaml for rationale
+eval:
+  n_seeds: 3

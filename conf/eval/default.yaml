@@ -1,0 +1,33 @@
+n_seeds: 1
+inf_sigma: 0.0
+visualize: false
+swd_projections: 50
+# MMD bandwidth convention. "median" (default) = single-kernel RBF MMD^2 with
+# median-heuristic sigma; "otpfm" = multi-scale RBF MMD^2 (5 kernels with
+# mean-sqdist bandwidth) matching OTP-FM/MMFM published numbers; "both"
+# reports both side-by-side.
+mmd_protocol: median
+# Metrics whose value is computed only at the final timepoint (chained
+# eval) or final hop (per-segment eval). Lets us skip the expensive
+# scipy.linalg.sqrtm matrix-square-root inside FGD for intermediate
+# timepoints. Other timepoints get NaN, which the table printer skips
+# when computing per-row means.
+final_only_metrics:
+  - FGD
+# Compute FGD (Fréchet Gaussian Distance). Disable on fast sweeps where
+# MMD^2 / SWD are sufficient -- FGD's scipy.linalg.sqrtm at high D is the
+# dominant per-method eval cost (~30-60s/call at D=2000, CPU-only).
+compute_fgd: true
+# Compute exact Wasserstein-2 distance via POT's network simplex. O(n^3 log n)
+# in the sample size, so feasible only on small marginals (~few thousand
+# cells). Off by default; turn on for the headline-best-model rerun on GoM
+# OTP-FM-9 where each marginal has 111 cells.
+compute_w2: false
+# Additionally compute MMD^2 / MMD^2_otpfm / SWD in a low-dim PCA latent
+# fit on the training-cell union (across all stages), alongside the
+# ambient-space versions. Useful for ambient log1p HVG runs where the
+# 2000-dim distances are noisy and you want OTP-FM-comparable PCA-50
+# numbers. Off by default; the new metrics print in their own eval blocks
+# titled `[METRIC_pca{dim}]`, parseable by build scripts.
+compute_pca_metrics: false
+pca_metric_dim: 50

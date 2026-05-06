@@ -1,0 +1,11 @@
+# @package _global_
+defaults:
+  - override /space: log1p
+
+data:
+  n_hvg: 1500
+eval:
+  n_seeds: 12
+methods:
+  - MM+Linear
+  - MM+Linear+Biharmonic

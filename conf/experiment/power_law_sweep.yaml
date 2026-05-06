@@ -1,0 +1,22 @@
+# @package _global_
+# Power-law spectral OT cost sweep on the embryoid body data.
+#
+# Family: rho_w(x_i, x_j)^2 = sum_k w(lambda_k) (phi_k(i) - phi_k(j))^2,
+# with w_alpha(lambda) = lambda^{-alpha}, alpha in {0, 0.5, 1, 1.5, 2}.
+#
+# alpha=0  : unweighted spectral coordinates
+# alpha=1  : commute-time-like
+# alpha=2  : biharmonic
+#
+# The code parameterizes weights as w_effective(lambda) = lambda^{-2*weight_power},
+# so weight_power = alpha / 2; the @alpha=... method-name suffix handles that
+# remapping per-method (see method_registry._split_method_name).
+methods:
+  - MM+SLERP                               # sphere geodesic baseline
+  - MM+SLERP+SquaredSpectral@alpha=0       # uniform spectral
+  - MM+SLERP+SquaredSpectral@alpha=0.5
+  - MM+SLERP+SquaredSpectral@alpha=1       # commute-time-like
+  - MM+SLERP+SquaredSpectral@alpha=1.5
+  - MM+SLERP+SquaredSpectral@alpha=2       # biharmonic
+eval:
+  n_seeds: 3
